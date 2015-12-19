@@ -33,43 +33,33 @@ module.exports = {
         //grab the room_id for messageObj.roomname
       //insert into messages table with the ids we now know for it
 
-      db.query('SELECT id from users where name ="' + messageObj.username + '"', function(err, results) {
+      db.query('INSERT INTO users (name) VALUES (?)', [messageObj.username], function(err, results) {
         // check whether user exists in user table
         // if not, add to user table, pass in everything else as a callback
-        console.log(err, results);
-        var userId = results[0];
-        db.query('SELECT id from rooms WHERE name ="' + messageObj.roomname + '"', function(err, results) {
-          //if results.length is 0
-          if (results.length === 0) {
-            //db.query insert into rooms
-            db.query('INSERT INTO rooms (name) VALUES (?)', [messageObj.roomname], function(err, results) {
-
-            })
-          }
-          var helper = function() {
-            var roomId = results[0];
-            var dateTime = new Date();
-            db.query('INSERT INTO messages (user_id, text, room_id, created_at) VALUES (?, ?, ?, ?)',
-              [userId, messageObj.message, roomId, dateTime], function(err, results){
-                if (err) {console.log('error inserting into table', err);} 
-                else {
-                  console.log('inserted into messages table');
-                  callback(err);
-                }
-              });
-          }
+        var userId = results.insertId;
+        db.query('INSERT INTO rooms (name) VALUES (?)', [messageObj.roomname], function(err, results) {
+          var roomId = results.insertId;
+          var dateTime = new Date();
+          db.query('INSERT INTO messages (user_id, text, room_id, created_at) VALUES (?, ?, ?, ?)',
+            [userId, messageObj.text, roomId, dateTime], function(err, results){
+              if (err) {console.log('error inserting into table', err);} 
+              else {
+                console.log('inserted into messages table');
+                callback(err);
+              }
+          });
         });
       });
-    }
+    },
   },
-
   users: {
     // Ditto as above.
     get: function () {},
     post: function (userObj, callback) {
-      db.query('INSERT INTO users (name) VALUES (?)', [userObj.username], function(err, results) {
-        callback(err);
-      });
+      callback();
+      //db.query('INSERT INTO users (name) VALUES (?)', [userObj.username], function(err, results) {
+       // callback(err);
+      //});
     }
   }
 };

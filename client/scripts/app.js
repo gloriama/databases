@@ -62,7 +62,7 @@ var app = {
       data: { order: '-createdAt'},
       success: function(data) {
         data = JSON.parse(data);
-        //console.log(data.results);
+        console.log(data.results);
         //console.log(Array.isArray(data.results));
         // Don't bother if we have nothing to work with
         if (!data.results || !data.results.length) { return; }
@@ -229,7 +229,7 @@ var app = {
 
   startSpinner: function(){
     $('.spinner img').show();
-    $('form input[type=submit]').attr('disabled', "true");
+    // $('form input[type=submit]').attr('disabled', "true");
   },
 
   stopSpinner: function(){

@@ -11,7 +11,7 @@ describe("Persistent Node Chat Server", function() {
   beforeEach(function(done) {
     dbConnection = mysql.createConnection({
       user: "root",
-      password: "hackreactor",
+      password: "hr",
       database: "chat"
     });
     dbConnection.connect();
@@ -38,8 +38,8 @@ describe("Persistent Node Chat Server", function() {
               uri: "http://127.0.0.1:3000/classes/messages",
               json: {
                 username: "Valjean",
-                message: "In mercy's name, three days is all I need.",
-                roomname: "Hello"
+                text: "In mercy's name, three days is all I need.",
+                roomname: "main"
               }
       }, function () {
         // Now if we look in the database, we should find the
@@ -65,8 +65,8 @@ describe("Persistent Node Chat Server", function() {
 
   it("Should output all messages from the DB", function(done) {
     // Let's insert a message into the db
-       var queryString = "";
-       var queryArgs = [];
+       var queryString = "INSERT INTO messages (user_id, text, room_id) VALUES (?, ?, ?)";
+       var queryArgs = [1, "Men like you can never change!", 1];
     // TODO - The exact query string and query args to use
     // here depend on the schema you design, so I'll leave
     // them up to you. */
@@ -77,7 +77,8 @@ describe("Persistent Node Chat Server", function() {
       // Now query the Node chat server and see if it returns
       // the message we just inserted:
       request("http://127.0.0.1:3000/classes/messages", function(error, response, body) {
-        var messageLog = JSON.parse(body);
+        console.log('test', err, body);
+        var messageLog = JSON.parse(body).results;
         expect(messageLog[0].text).to.equal("Men like you can never change!");
         expect(messageLog[0].roomname).to.equal("main");
         done();
