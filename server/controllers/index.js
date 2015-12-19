@@ -22,17 +22,37 @@ module.exports = {
       // });
     },
     post: function (req, res) { // a function which handles posting a message to the database
-      //post(req.message);
-      //send back a response saying "we added it, thanks"
-
-      res.writeHead(200, headers);
-      res.end();
+      console.log("received post request to /classes/messages");
+      console.log(req.body);
+      // var messageAsString = '';
+      // req.on('data', function(chunk) {
+      //   console.log('heard "data" from POST request');
+      //   messageAsString += chunk;
+      // });
+      // req.on('end', function() {
+      //   console.log('heard "end" from POST request');
+      //   models.messages.post(JSON.parse(messageAsString), function(err) {
+      //     res.writeHead(201, {});
+      //     res.end();
+      //   });
+      // })
+      req.body.createdAt = new Date();
+      req.body.objectId = 100;
+      models.messages.post(req.body, function(err) {
+        res.writeHead(201, {});
+        res.end();
+      });
     }
   },
 
   users: {
     // Ditto as above
     get: function (req, res) {}, //last priority since never used
-    post: function (req, res) {}
+    post: function (req, res) {
+      models.users.post(req.body, function(err) {
+        res.writeHead(201, {});
+        res.end();
+      });
+    }
   }
 };
